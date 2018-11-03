@@ -1,4 +1,4 @@
-import { UP_ARROW, RIGHT_ARROW, DOWN_ARROW, LEFT_ARROW, TAB } from 'src/app/util/keycodes';
+import { UP_ARROW, RIGHT_ARROW, DOWN_ARROW, LEFT_ARROW, TAB, HOME, END } from 'src/app/util/keycodes';
 import { QueryList } from '@angular/core';
 import { Subject } from 'rxjs';
 
@@ -40,18 +40,11 @@ export class ListKeyManager<T extends ILisKeyManagerOption> {
             return this._itemsQueryList.toArray();
         }
         return this._itemsQueryList;
-     }
-
-    constructor(private _itemsQueryList: QueryList<T> | T[]) {}
-
-    public setSelectedItem(item: number | T): void {
-        const itemArr: T[] = this.items;
-        const index = this._getIndexOf(itemArr, item);
-        this.selectedItemIndex = index;
     }
 
+    constructor(private _itemsQueryList: QueryList<T> | T[]) {   }
 
-    handleKeyDown(event: KeyboardEvent): void {
+    public handleKeyDown(event: KeyboardEvent): void {
         const keyCode = event.keyCode;
         let selectedIdx = -1;
 
@@ -60,11 +53,20 @@ export class ListKeyManager<T extends ILisKeyManagerOption> {
                 this.tabOut.next();
                 return;
             }
+            case HOME: {
+                this._selectFirstItem();
+                return;
+            }
+            case END: {
+                this._selectLastItem();
+                return;
+            }
             case UP_ARROW:
             case LEFT_ARROW: {
                 event.preventDefault();
                 if (this._selectedItemIndex === 0) {
-                    selectedIdx = this.items.length - 1;
+                    this._selectLastItem();
+                    return;
                 } else {
                     selectedIdx = this._selectedItemIndex - 1;
                 }
@@ -73,7 +75,8 @@ export class ListKeyManager<T extends ILisKeyManagerOption> {
             case DOWN_ARROW:
             case RIGHT_ARROW: {
                 if (this._selectedItemIndex === (this.items.length - 1)) {
-                    selectedIdx = 0;
+                    this._selectFirstItem();
+                    return;
                 } else {
                     selectedIdx = this._selectedItemIndex + 1;
                 }
@@ -81,6 +84,21 @@ export class ListKeyManager<T extends ILisKeyManagerOption> {
             }
         }
         this.setSelectedItem(selectedIdx);
+    }
+
+    public setSelectedItem(item: number | T): void {
+        const itemArr: T[] = this.items;
+        const index = this._getIndexOf(itemArr, item);
+        this.selectedItemIndex = index;
+    }
+
+    private _selectFirstItem(): void {
+        this.setSelectedItem(0);
+    }
+
+    private _selectLastItem(): void {
+        const lastIndex = this.items.length - 1;
+        this.setSelectedItem(lastIndex);
     }
 
     private _getIndexOf(items: T[], item: number | T): number {

@@ -1,12 +1,16 @@
 import { Directive, ElementRef, Renderer2, HostListener, ChangeDetectorRef } from '@angular/core';
-import { ILisKeyManagerOption } from './a11y/roving-tabindex';
 import { SPACE, ENTER } from './util/keycodes';
+import { TabbableOption } from './a11y/roving-tabindex/roving-tabindex';
 
-export abstract class Option implements ILisKeyManagerOption {
-  isDisabled: boolean;
-  abstract focus(): void;
+@Directive({
+  selector: '[option]'
+})
+// tslint:disable-next-line:directive-class-suffix
+export class RadioOption extends TabbableOption {
+  constructor(_el: ElementRef) {
+    super(_el);
+  }
 }
-
 @Directive({
   selector: '[radio-option]',
   host: {
@@ -14,7 +18,7 @@ export abstract class Option implements ILisKeyManagerOption {
     '[attr.aria-checked]' : 'isChecked',
   }
 })
-export class RadioOptionDirective extends Option {
+export class RadioOptionDirective extends RadioOption {
   private _isChecked: boolean;
 
   get isChecked(): boolean {
@@ -26,32 +30,15 @@ export class RadioOptionDirective extends Option {
     this._changeDetector.detectChanges();
   }
 
-  get isFocused(): boolean {
-    return this._isChecked;
-  }
-
-  set isFocused(isFocused: boolean) {
-    if (isFocused) {
-      this._renderer.setAttribute(this._el.nativeElement, 'tabindex', '0');
-    } else {
-      this._renderer.setAttribute(this._el.nativeElement, 'tabindex', '-1');
-    }
-    this._changeDetector.detectChanges();
-  }
-
-  focus(): void {
-    this._el.nativeElement.focus();
-  }
 
   constructor(private _el: ElementRef, private _renderer: Renderer2, private _changeDetector: ChangeDetectorRef) {
-    super();
+    super(_el);
     this._isChecked = false;
-    this._renderer.setAttribute(this._el.nativeElement, 'tabindex', '-1');
   }
 
   @HostListener('keydown', ['$event']) handleKeydown(event: KeyboardEvent) {
     const keycode = event.keyCode;
-    switch(keycode) {
+    switch (keycode) {
       case SPACE:
       case ENTER: {
         this.isChecked = true;
