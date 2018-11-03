@@ -8,41 +8,27 @@ export interface ILisKeyManagerOption {
 }
 
 export class ListKeyManager<T extends ILisKeyManagerOption> {
-    private _selectedItem: T;
+    private _selectedItem: T = null;
     private _selectedItemIndex = -1;
     public change: Subject<T> = new Subject<T>();
     public tabOut: Subject<void> = new Subject<void>();
-
-    set selectedItemIndex(index: number) {
-        const newSelected = this.items[index];
-        if (newSelected) {
-            this._selectedItemIndex = index;
-            this._selectedItem = newSelected;
-            this.change.next(this._selectedItem);
-        }
-    }
-
-    set selectedItem(item: T) {
-        const index = this.items.indexOf(item);
-        if (index >= 0) {
-            this._selectedItem = item;
-            this._selectedItemIndex = index;
-            this.change.next(this._selectedItem);
-        }
-    }
 
     get selected(): T {
         return this._selectedItem;
     }
 
-    private get items(): T[] {
-        if (this._itemsQueryList instanceof QueryList) {
-            return this._itemsQueryList.toArray();
-        }
-        return this._itemsQueryList;
+    get selectedItemIndex(): number {
+        return this._selectedItemIndex;
     }
 
-    constructor(private _itemsQueryList: QueryList<T> | T[]) {   }
+    private get items(): T[] {
+        if (Array.isArray(this._itemsQueryList)) {
+            return this._itemsQueryList;
+        }
+        return this._itemsQueryList.toArray();
+    }
+
+    constructor(private _itemsQueryList: QueryList<T> | T[]) {}
 
     public handleKeyDown(event: KeyboardEvent): void {
         const keyCode = event.keyCode;
@@ -83,13 +69,18 @@ export class ListKeyManager<T extends ILisKeyManagerOption> {
                 break;
             }
         }
-        this.setSelectedItem(selectedIdx);
+        if(selectedIdx > 0) {
+            this.setSelectedItem(selectedIdx);
+        }
     }
 
     public setSelectedItem(item: number | T): void {
         const itemArr: T[] = this.items;
         const index = this._getIndexOf(itemArr, item);
-        this.selectedItemIndex = index;
+        this._selectedItem = itemArr[index];
+        this._selectedItemIndex = index;
+        console.log(this._selectedItem);
+        this.change.next(this._selectedItem);
     }
 
     private _selectFirstItem(): void {

@@ -22,10 +22,10 @@ export class AppComponent implements AfterViewInit {
   ];
 
   ngAfterViewInit() {
-    this._manager = new RovingTabindex(this.radios);
-    this._manager.change.subscribe((item) => {
-      item.isChecked = !item.isChecked;
-    })
+    if (this.radios) {
+      this._manager = new RovingTabindex(this.radios);
+      this._manager.select(0);
+    }
   }
 
   @HostListener('keydown', ['$event'])

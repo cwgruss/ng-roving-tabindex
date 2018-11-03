@@ -31,12 +31,21 @@ export class RovingTabindex<T extends TabbableOption> {
     private _keyManager: ListKeyManager<T>;
 
     private _focusedEl: T;
-    private _focusedIndex: number;
     public handleKeyboard: (event: KeyboardEvent) => {};
+
+
     change: Subject<T>;
     tabOut: Subject<void>;
 
-    public select(item: T): void {
+    get selected(): T {
+        return this._keyManager.selected;
+    }
+
+    get selectedIndex(): number {
+        return this._keyManager.selectedItemIndex;
+    }
+
+    public select(item: T| number): void {
         this._keyManager.setSelectedItem(item);
     }
 
@@ -45,7 +54,6 @@ export class RovingTabindex<T extends TabbableOption> {
         this._keyManager = new ListKeyManager(_itemsQueryList);
 
         this._keyManager.change.subscribe((selected: T) => {
-            console.log(selected);
             this.deselectAll();
             this._focusedEl = selected;
             this._focusedEl.isFocusable = true;
