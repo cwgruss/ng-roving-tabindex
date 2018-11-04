@@ -1,0 +1,7 @@
+<div class="radio-group" (keydown)="handleKeydown($event)">
+  <ul class="radio-group__list" role="radiogroup">
+    <li class="list-item" *ngFor="let option of items" radio-option>
+      <ng-content *ngTemplateOutlet="optionTemplate; context: { $implicit: option }"></ng-content>
+    </li>
+  </ul>
+</div>

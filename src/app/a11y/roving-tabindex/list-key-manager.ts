@@ -80,7 +80,6 @@ export class ListKeyManager<T extends ILisKeyManagerOption> {
         const index = this._getIndexOf(itemArr, item);
         this._selectedItem = itemArr[index];
         this._selectedItemIndex = index;
-        console.log(this._selectedItem);
         this.change.next(this._selectedItem);
     }
 

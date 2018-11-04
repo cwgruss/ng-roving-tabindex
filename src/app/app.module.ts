@@ -3,16 +3,16 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { A11yModule } from './a11y/a11y.module';
-import { RadioOptionDirective } from './radio-option.directive';
+import { ExamplesModule } from './examples/examples.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    RadioOptionDirective
   ],
   imports: [
     BrowserModule,
-    A11yModule
+    A11yModule,
+    ExamplesModule
   ],
   providers: [],
   bootstrap: [AppComponent]

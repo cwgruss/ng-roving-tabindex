@@ -1,0 +1,45 @@
+
+$colors: (
+    primary: #1abc9c,
+    secondary: #2980b9,
+    supporting: #e67e22
+  );
+  
+  $grays: (
+      gray-000: #34495e,
+      gray-100: #2c3e50,
+      gray-200: #95a5a6
+  );
+  
+
+
+
+@function color($color-name) {
+    @return var(--color-#{$color-name});
+}
+
+@mixin focus-ring() {
+    outline-color: color(supporting);
+    outline-style: dotted;
+}
+
+.radio-group {
+    @each $name, $color in $colors {
+        --color-#{$name}: #{$color};
+    }
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    letter-spacing: 2px;
+    &__list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .list-item {
+        display: block;
+        padding: 15px;
+        &:focus {
+            @include focus-ring();
+        }
+    }
+}
