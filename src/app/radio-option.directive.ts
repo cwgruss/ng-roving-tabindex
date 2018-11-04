@@ -16,6 +16,7 @@ export class RadioOption extends TabbableOption {
   host: {
     'role': 'radio',
     '[attr.aria-checked]' : 'isChecked',
+    '[class.is-active]': 'isChecked'
   }
 })
 export class RadioOptionDirective extends RadioOption {
@@ -31,6 +32,9 @@ export class RadioOptionDirective extends RadioOption {
   }
 
 
+  toggle(): void {
+    this.isChecked = !this.isChecked;
+  }
   constructor(private _el: ElementRef, private _renderer: Renderer2, private _changeDetector: ChangeDetectorRef) {
     super(_el);
     this._isChecked = false;
@@ -41,7 +45,7 @@ export class RadioOptionDirective extends RadioOption {
     switch (keycode) {
       case SPACE:
       case ENTER: {
-        this.isChecked = true;
+        this.toggle();
       }
     }
   }

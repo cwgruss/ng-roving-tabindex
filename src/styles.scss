@@ -1,1 +1,46 @@
 /* You can add global styles to this file, and also import other style files */
+
+$colors: (
+  primary: #1abc9c,
+  secondary: #2980b9,
+  supporting: #e67e22
+);
+
+$grays: (
+    gray-000: #34495e,
+    gray-100: #2c3e50,
+    gray-200: #95a5a6
+);
+
+ 
+:root {
+    @each $name, $color in $colors {
+        --color-#{$name}: #{$color};
+    }
+}
+
+
+@function color($color-name) {
+    @return var(--color-#{$color-name});
+}
+
+.radio-group {
+
+    &__list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .list-item {
+        display: block;
+        padding: 15px;
+        &:focus {
+            outline-color: color(supporting);
+        }
+
+        &.is-active {
+            border-left: 3px solid color(primary);
+        }
+    }
+}

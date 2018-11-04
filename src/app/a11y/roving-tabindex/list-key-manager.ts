@@ -49,7 +49,6 @@ export class ListKeyManager<T extends ILisKeyManagerOption> {
             }
             case UP_ARROW:
             case LEFT_ARROW: {
-                event.preventDefault();
                 if (this._selectedItemIndex === 0) {
                     this._selectLastItem();
                     return;
@@ -69,9 +68,11 @@ export class ListKeyManager<T extends ILisKeyManagerOption> {
                 break;
             }
         }
-        if(selectedIdx > 0) {
+
+        if (selectedIdx > -1) {
             this.setSelectedItem(selectedIdx);
         }
+        event.preventDefault();
     }
 
     public setSelectedItem(item: number | T): void {
